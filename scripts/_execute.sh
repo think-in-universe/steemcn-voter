@@ -2,4 +2,4 @@
 
 set -e
 
-pipenv run invoke recipe.vote -r steemcn
+nohup pipenv run invoke recipe.vote -r steemcn &

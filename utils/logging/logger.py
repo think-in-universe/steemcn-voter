@@ -25,7 +25,7 @@ class LoggerControl:
         return self._log
 
 
-logger_ctl = LoggerControl("autopilot")
+logger_ctl = LoggerControl("steemcn")
 logger_ctl.set_level(logging.INFO)
 logger = logger_ctl.get_logger()
 
