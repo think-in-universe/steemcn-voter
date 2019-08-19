@@ -36,7 +36,7 @@ class SteemCnVoter(VoteRecipe):
             c = SteemComment(ops=ops)
             beneficiary = c.get_beneficiaries(account=BENEFICIARY_ACCOUNT)
             if beneficiary >= BENEFICIARY_THRESHOLD:
-                logger.info("Post {} has set {} beneficiary. I'll vote in {} minutes".format(self.ops.get_url(), beneficiary, VOTE_TIMING))
+                logger.info("Post {} has set {} beneficiary.".format(self.ops.get_url(), beneficiary, VOTE_TIMING))
                 return True
         return False
 
