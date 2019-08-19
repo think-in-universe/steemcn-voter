@@ -30,7 +30,7 @@ class SteemCnVoter(VoteRecipe):
         return VOTER_ACCOUNT
 
     def what_to_vote(self, ops):
-        posted_with_steemcn = self.ops.is_app(APP) and not self.ops.get_comment().is_comment()
+        posted_with_steemcn = self.ops.is_app(APP) and not self.ops.is_comment()
         if posted_with_steemcn:
             logger.info("Find post {} published with [{}] app".format(self.ops.get_url(), APP))
             c = SteemComment(ops=ops)
