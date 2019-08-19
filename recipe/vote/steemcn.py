@@ -1,17 +1,25 @@
 # -*- coding:utf-8 -*-
 
+import sys
 from steem.comment import SteemComment
 from action.vote.recipe import VoteRecipe
 from utils.logging.logger import logger
 
+
 # app specific parameter
+SEARCH_TOKEN = "MARLIANS"
+TRIBE_TAG = "cn"
 APP = "steemcn"
 BENEFICIARY_ACCOUNT = "steem-drivers"
 BENEFICIARY_THRESHOLD = 5 # %
 # voter configuration
 VOTER_ACCOUNT = "steem-drivers"
 VOTE_TIMING = 15 # mins
+DAILY_VOTE_TIMING = 5 # mins
 VOTE_WEIGHT = 25 # %
+VOTE_CYCLE = 1.05 # days
+VOTE_PER_ACCOUNT_LIMIT = 2
+
 
 class SteemCnVoter(VoteRecipe):
 
@@ -40,3 +48,50 @@ class SteemCnVoter(VoteRecipe):
 
     def how_to_vote(self, post):
         return VOTE_WEIGHT # %
+
+
+class SteemCnDailyVoter(SteemCnVoter):
+
+    def __init__(self):
+        super().__init__()
+        self.authors = {}
+        self.posts_num = 0
+        self.voted_posts = 0
+
+    def mode(self):
+        return "query.comment.post"
+
+    def config(self):
+        return {
+            "token": SEARCH_TOKEN,
+            "tag": TRIBE_TAG,
+            "days": VOTE_CYCLE
+        }
+
+    def who_to_vote(self, author):
+        if self.authors.get(author) is None:
+            self.authors[author] = 1
+            self.posts_num += 1
+            return True
+        elif self.authors.get(author) < VOTE_PER_ACCOUNT_LIMIT:
+            self.authors[author] += 1
+            self.posts_num += 1
+            return True
+        elif self.authors.get(author) >= VOTE_PER_ACCOUNT_LIMIT:
+            return False
+        return False
+
+    def when_to_vote(self, ops):
+        return DAILY_VOTE_TIMING # mins
+
+    def how_to_vote(self, post):
+        self.voted_posts += 1
+        logger.info("voting {} / {} posts".format(self.voted_posts, self.posts_num))
+        return self.voter.estimate_vote_pct_for_n_votes(days=VOTE_CYCLE, n=self.posts_num)
+
+        # return VOTE_WEIGHT # %
+
+    def after_success(self, res):
+        if self.voted_posts == self.posts_num:
+            logger.info("Done with voting. Exit.")
+            sys.exit()

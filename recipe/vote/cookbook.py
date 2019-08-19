@@ -5,7 +5,7 @@ from invoke import task
 from steem.settings import settings
 from utils.logging.logger import logger
 
-from recipe.vote.steemcn import SteemCnVoter
+from recipe.vote.steemcn import SteemCnVoter, SteemCnDailyVoter
 
 
 class VoteCookbook:
@@ -22,6 +22,7 @@ class VoteCookbook:
 
     def _build(self):
         self._add("steemcn", SteemCnVoter)
+        self._add("steemcn_daily", SteemCnDailyVoter)
 
     def cook(self, recipe_name):
         recipe = self._get(recipe_name)
