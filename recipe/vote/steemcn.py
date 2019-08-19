@@ -19,6 +19,8 @@ DAILY_VOTE_TIMING = 5 # mins
 VOTE_WEIGHT = 25 # %
 VOTE_CYCLE = 1.05 # days
 VOTE_PER_ACCOUNT_LIMIT = 2
+BLACKLIST = []
+ACCOUNT_REPUTATION_THRESHOLD = 35
 
 
 class SteemCnVoter(VoteRecipe):
@@ -69,6 +71,15 @@ class SteemCnDailyVoter(SteemCnVoter):
         }
 
     def who_to_vote(self, author):
+        if author in BLACKLIST:
+            logger.info("Skip [{}] who is in my blacklist".format(author))
+            return False
+
+        account = SteemAccount(author)
+        if account.reputation() < ACCOUNT_REPUTATION_THRESHOLD:
+            logger.info("Skip [{}] whose reputation is too low".format(author))
+            return False
+
         if self.authors.get(author) is None:
             self.authors[author] = 1
             self.posts_num += 1
