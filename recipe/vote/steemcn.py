@@ -1,13 +1,14 @@
 # -*- coding:utf-8 -*-
 
 import sys
+from steem.account import SteemAccount
 from steem.comment import SteemComment
 from action.vote.recipe import VoteRecipe
 from utils.logging.logger import logger
 
 
 # app specific parameter
-SEARCH_TOKEN = "MARLIANS"
+SEARCH_BY_TOKEN = "MARLIANS" # "UFM"
 TRIBE_TAG = "cn"
 APP = "steemcn"
 BENEFICIARY_ACCOUNT = "steem-drivers"
@@ -65,7 +66,7 @@ class SteemCnDailyVoter(SteemCnVoter):
 
     def config(self):
         return {
-            "token": SEARCH_TOKEN,
+            "token": SEARCH_BY_TOKEN, # the token is necessary because the query may miss some posts when the total number of tags exceeds 5
             "tag": TRIBE_TAG,
             "days": VOTE_CYCLE
         }
@@ -98,9 +99,12 @@ class SteemCnDailyVoter(SteemCnVoter):
     def how_to_vote(self, post):
         self.voted_posts += 1
         logger.info("voting {} / {} posts".format(self.voted_posts, self.posts_num))
-        return self.voter.estimate_vote_pct_for_n_votes(days=VOTE_CYCLE, n=self.posts_num)
+        weight = self.voter.estimate_vote_pct_for_n_votes(days=VOTE_CYCLE, n=self.posts_num)
 
-        # return VOTE_WEIGHT # %
+        if weight  > 100:
+            weight = 100
+
+        return weight
 
     def after_success(self, res):
         if self.voted_posts == self.posts_num:

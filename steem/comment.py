@@ -93,6 +93,15 @@ class SteemComment:
                 return True
         return False
 
+    def get_app(self):
+        metadata = self.get_comment().json_metadata
+        if metadata and 'app' in metadata:
+            return metadata['app']
+        return ""
+
+    def is_app(self, app):
+        return app is not None and app.lower() in str(self.get_app()).lower()
+
     def refresh(self):
         c = self.get_comment()
         try:
