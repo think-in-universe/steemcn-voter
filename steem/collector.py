@@ -225,9 +225,9 @@ class SteemPostsByToken(SteemPostsByTag):
         posts = []
 
         if last_post:
-            blogs = get_discussions("created", token=self.token, limit=limit, start_author=last_post['author'], start_permlink=last_post['permlink'])
+            blogs = get_discussions("created", token=self.token, tag=self.tag, limit=limit, start_author=last_post['author'], start_permlink=last_post['permlink'])
         else:
-            blogs = get_discussions("created", token=self.token, limit=limit)
+            blogs = get_discussions("created", tag=self.tag, token=self.token, limit=limit)
 
         logger.info ('reading posts: {}'.format(len(blogs)))
 
