@@ -127,14 +127,14 @@ class SteemComment:
     def is_upvoted_by(self, account):
         has_upvoted = False
         for vote in self.get_comment().get_votes():
-            if vote.voter == account and vote.percent > 0:
+            if vote.voter == account and float(vote.percent) > 0:
                 has_upvoted = True
         return has_upvoted
 
     def is_downvoted_by(self, account):
         has_downvoted = False
         for vote in self.get_comment().get_votes():
-            if vote.voter == account and vote.percent < 0:
+            if vote.voter == account and float(vote.percent) < 0:
                 has_downvoted = True
         return has_downvoted
 

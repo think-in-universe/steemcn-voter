@@ -39,8 +39,12 @@ class SteemCnVoter(VoteRecipe):
             c = SteemComment(ops=ops)
             beneficiary = c.get_beneficiaries(account=BENEFICIARY_ACCOUNT)
             if beneficiary >= BENEFICIARY_THRESHOLD:
-                logger.info("Post {} has set {} beneficiary.".format(self.ops.get_url(), beneficiary, VOTE_TIMING))
-                return True
+                logger.info("Post {} has set {} beneficiary.".format(self.ops.get_url(), beneficiary))
+                if self.ops.is_upvoted_by(self.by()):
+                    logger.info("Post {} is already upvoted. Skip.".format(self.ops.get_url()))
+                    return False
+                else:
+                    return True
         return False
 
     def who_to_vote(self, author):
