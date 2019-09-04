@@ -91,7 +91,7 @@ class VoteBot:
             return False
 
         while time.time() - self.last_vote_timestamp < MINIMUM_VOTE_INTERVAL:
-            wait_time = round(MINIMUM_VOTE_INTERVAL + random.random() * MINIMUM_VOTE_INTERVAL * 0.2, 2)
+            wait_time = round(MINIMUM_VOTE_INTERVAL + (random.random() * MINIMUM_VOTE_INTERVAL + 1) * 0.5, 2)
             logger.info("Sleep {} seconds to avoid voting too frequently.".format(wait_time))
             time.sleep(wait_time)
             if time.time() - self.last_vote_timestamp >= MINIMUM_VOTE_INTERVAL:
